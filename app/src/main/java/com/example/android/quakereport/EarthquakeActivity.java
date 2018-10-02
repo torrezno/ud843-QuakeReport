@@ -17,33 +17,41 @@ package com.example.android.quakereport;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import java.util.ArrayList;
-
+//https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2016-01-01&endtime=2016-01-31&minmag=6&limit=10
 public class EarthquakeActivity extends AppCompatActivity {
 
     public static final String LOG_TAG = EarthquakeActivity.class.getName();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.earthquake_activity);
 
+        ArrayList<Earthquake> earthquakes1 = QueryUtils.extractEarthquakes();
+
+
         // Create a fake list of earthquake locations.
         ArrayList<Earthquake> earthquakes = new ArrayList<>();
-        earthquakes.add(new Earthquake(4.5,"San Francisco","02/10/2018"));
-        earthquakes.add(new Earthquake(4.5,"London","02/10/2018"));
-        earthquakes.add(new Earthquake(4.5,"Tokyo","02/10/2018"));
-        earthquakes.add(new Earthquake(4.5,"Mexico City","02/10/2018"));
-        earthquakes.add(new Earthquake(4.5,"Moscow","02/10/2018"));
-        earthquakes.add(new Earthquake(4.5,"Rio de Janeiro","02/10/2018"));
+
+
+        earthquakes.add(new Earthquake("4.5","San Francisco","02/10/2018"));
+        earthquakes.add(new Earthquake("4.5","London","02/10/2018"));
+        earthquakes.add(new Earthquake("4.5","Tokyo","02/10/2018"));
+        earthquakes.add(new Earthquake("4.5","Mexico City","02/10/2018"));
+        earthquakes.add(new Earthquake("4.5","Moscow","02/10/2018"));
+        earthquakes.add(new Earthquake("4.5","Rio de Janeiro","02/10/2018"));
 
         // Find a reference to the {@link ListView} in the layout
         ListView earthquakeListView = (ListView) findViewById(R.id.list_view);
 
-        EarthquakeAdapter quakeAdapter = new EarthquakeAdapter(this, earthquakes);
+        EarthquakeAdapter quakeAdapter = new EarthquakeAdapter(this, earthquakes1);
 
 
 
