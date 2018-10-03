@@ -52,15 +52,7 @@ class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
         dateTextView.setText(currentQuake.getDate());
         timeTextView.setText(currentQuake.getTime());
 
-        quakeView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(Intent.ACTION_VIEW);
-                intent.setData(Uri.parse(currentQuake.getURL()));
-                getContext().startActivity(intent);
 
-            }
-        });
 
         return quakeView;
     }
