@@ -22,4 +22,7 @@
 
     <!-- Accent color of the app -->
     <color name="colorAccent">#10CAC9</color>
+
+    <!-- Subtext Color -->
+    <color name="subtext">@android:color/darker_gray</color>
 </resources>

@@ -2,6 +2,7 @@ package com.example.android.quakereport;
 
 import android.util.Log;
 
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -10,13 +11,28 @@ class Earthquake {
     private String mCity;
     private Date mDate;
     private String mDateString;
-    private final SimpleDateFormat  mDateFormatter = new SimpleDateFormat("MMM DD, yyyy");
+    private String mTimeString;
+    private String mPrimaryLocation;
+    private String mLocationOffset;
+    private String mStringMagnitude;
+    private final DecimalFormat mDecimalFormatter = new DecimalFormat("0.0");
+    private final SimpleDateFormat mDateFormatter = new SimpleDateFormat("MMM DD, yyyy");
+    private final SimpleDateFormat mTimeFormatter = new SimpleDateFormat("HH:mm z");
 
     public Earthquake(String magnitude, String city, String date) {
         mMagnitude = magnitude;
         mCity = city;
         mDate = new Date(Long.parseLong(date));
         mDateString = mDateFormatter.format(mDate);
+        mTimeString = mTimeFormatter.format(mDate);
+        if(city.contains(" of ")) {
+            mLocationOffset = city.substring(0, city.indexOf(" of ") + 4);
+            mPrimaryLocation = city.substring(city.indexOf(" of ") + 4);
+        }else{
+            mLocationOffset="Near the";
+            mPrimaryLocation=mCity;
+        }
+        mStringMagnitude = mDecimalFormatter.format(Double.parseDouble(mMagnitude));
         Log.v("Earthquake:",this.toString());
     }
 
@@ -30,6 +46,14 @@ class Earthquake {
 
     public String getDate() { return mDateString; }
 
+    public String getTime() { return mTimeString; }
+
+    public String getPrimaryLocation() { return mPrimaryLocation; }
+
+    public String getLocationOffset() { return mLocationOffset; }
+
+    public String getStringMagnitude() { return mStringMagnitude; }
+
     @Override
     public String toString() {
         return "EarthQuake{" +
@@ -37,6 +61,9 @@ class Earthquake {
                 ", mCity='" + mCity + '\'' +
                 ", mDate='" + mDate + '\'' +
                 ", mDateString='" + mDateString + '\'' +
+                ", mPrimaryLocation='" + mPrimaryLocation + '\'' +
+                ", mLocationOffset='" + mLocationOffset + '\'' +
+                ", mStringMagnitude='" + mStringMagnitude + '\'' +
                 '}';
     }
 }
