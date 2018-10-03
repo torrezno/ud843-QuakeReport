@@ -1,7 +1,9 @@
 package com.example.android.quakereport;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
@@ -31,7 +33,7 @@ class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
                     R.layout.quake_layout, parent, false);
         }
         // Get the {@link AndroidFlavor} object located at this position in the list
-        Earthquake currentQuake = getItem(position);
+        final Earthquake currentQuake = getItem(position);
 
         TextView magnitudeTextView = (TextView) quakeView.findViewById(R.id.magnitude);
         TextView locationOffsetTextView = (TextView) quakeView.findViewById(R.id.location_offset);
@@ -49,6 +51,16 @@ class EarthquakeAdapter extends ArrayAdapter<Earthquake> {
         primaryLocationTextView.setText(currentQuake.getPrimaryLocation());
         dateTextView.setText(currentQuake.getDate());
         timeTextView.setText(currentQuake.getTime());
+
+        quakeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(currentQuake.getURL()));
+                getContext().startActivity(intent);
+
+            }
+        });
 
         return quakeView;
     }

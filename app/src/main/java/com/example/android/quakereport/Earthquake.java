@@ -15,16 +15,18 @@ class Earthquake {
     private String mPrimaryLocation;
     private String mLocationOffset;
     private String mStringMagnitude;
+    private String mURL;
     private final DecimalFormat mDecimalFormatter = new DecimalFormat("0.0");
     private final SimpleDateFormat mDateFormatter = new SimpleDateFormat("MMM DD, yyyy");
     private final SimpleDateFormat mTimeFormatter = new SimpleDateFormat("HH:mm z");
 
-    public Earthquake(String magnitude, String city, String date) {
+    public Earthquake(String magnitude, String city, String date, String URL) {
         mMagnitude = magnitude;
         mCity = city;
         mDate = new Date(Long.parseLong(date));
         mDateString = mDateFormatter.format(mDate);
         mTimeString = mTimeFormatter.format(mDate);
+        mURL = URL;
         if(city.contains(" of ")) {
             mLocationOffset = city.substring(0, city.indexOf(" of ") + 4);
             mPrimaryLocation = city.substring(city.indexOf(" of ") + 4);
@@ -53,6 +55,8 @@ class Earthquake {
     public String getLocationOffset() { return mLocationOffset; }
 
     public String getStringMagnitude() { return mStringMagnitude; }
+
+    public String getURL() { return mURL; }
 
     @Override
     public String toString() {
