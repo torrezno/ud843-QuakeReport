@@ -23,6 +23,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -67,19 +68,23 @@ public class EarthquakeActivity extends AppCompatActivity
 
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
-
+        Log.v(LOG_TAG,"TESTLOADER - In main Activity, ask for a loaderManager");
         LoaderManager loaderManager = getLoaderManager();
+        Log.v(LOG_TAG,"TESTLOADER - In main Activity, got it. Now for the init");
         loaderManager.initLoader(EARTHQUAKE_LOADER_ID,null, this);
+        Log.v(LOG_TAG,"TESTLOADER - In main Activity, init done with id " + EARTHQUAKE_LOADER_ID);
     }
 
 
     @Override
     public android.content.Loader<List<Earthquake>> onCreateLoader(int i, Bundle bundle) {
+        Log.v(LOG_TAG,"TESTLOADER - in onCreateLoader method, creating a new Loader cause it didnt found it");
         return new EarthquakeLoader(this, URL_STRING);
     }
 
     @Override
     public void onLoadFinished(android.content.Loader<List<Earthquake>> loader, List<Earthquake> earthquakes) {
+        Log.v(LOG_TAG,"TESTLOADER - Finished loading data, lets plug the new data onto the adapter");
         mAdapter.clear();
         if(earthquakes!=null && !earthquakes.isEmpty()){
             mAdapter.addAll(earthquakes);
@@ -88,6 +93,7 @@ public class EarthquakeActivity extends AppCompatActivity
 
     @Override
     public void onLoaderReset(android.content.Loader<List<Earthquake>> loader) {
+        Log.v(LOG_TAG,"TESTLOADER - Loader has been reset.");
          mAdapter.clear();
     }
 }
