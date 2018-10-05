@@ -28,6 +28,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.widget.TextView;
 
 
 import java.util.ArrayList;
@@ -43,13 +44,18 @@ public class EarthquakeActivity extends AppCompatActivity
     private static final String URL_STRING = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=6&limit=10";
 
     private EarthquakeAdapter mAdapter;
+    private TextView mEmptyStateTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Log.v(LOG_TAG,"TESTLOADER - MainActivity onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.earthquake_activity);
 
         ListView earthquakeListView = (ListView) findViewById(R.id.list_view);
+        mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
+        earthquakeListView.setEmptyView(mEmptyStateTextView);
+
 
         mAdapter = new EarthquakeAdapter(this, new ArrayList<Earthquake>());
 
@@ -70,9 +76,8 @@ public class EarthquakeActivity extends AppCompatActivity
         // so the list can be populated in the user interface
         Log.v(LOG_TAG,"TESTLOADER - In main Activity, ask for a loaderManager");
         LoaderManager loaderManager = getLoaderManager();
-        Log.v(LOG_TAG,"TESTLOADER - In main Activity, got it. Now for the init");
         loaderManager.initLoader(EARTHQUAKE_LOADER_ID,null, this);
-        Log.v(LOG_TAG,"TESTLOADER - In main Activity, init done with id " + EARTHQUAKE_LOADER_ID);
+
     }
 
 
@@ -89,6 +94,7 @@ public class EarthquakeActivity extends AppCompatActivity
         if(earthquakes!=null && !earthquakes.isEmpty()){
             mAdapter.addAll(earthquakes);
         }
+        mEmptyStateTextView.setText("No earthquakes found");
     }
 
     @Override

@@ -67,6 +67,8 @@ public final class QueryUtils {
     public static List<Earthquake>  fetchEarthquakeData(String urlString){
         URL url = createUrl(urlString);
 
+        Log.v(LOG_TAG, "TESTLOADER - Making API CALL!");
+
         String jsonResponse = null;
         try {
             jsonResponse = makeHttpRequest(url);
