@@ -19,8 +19,11 @@ import android.app.LoaderManager;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -28,6 +31,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 
@@ -45,6 +49,7 @@ public class EarthquakeActivity extends AppCompatActivity
 
     private EarthquakeAdapter mAdapter;
     private TextView mEmptyStateTextView;
+    private ProgressBar mLoaderIndicator;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +60,7 @@ public class EarthquakeActivity extends AppCompatActivity
         ListView earthquakeListView = (ListView) findViewById(R.id.list_view);
         mEmptyStateTextView = (TextView) findViewById(R.id.empty_view);
         earthquakeListView.setEmptyView(mEmptyStateTextView);
+        mLoaderIndicator = (ProgressBar) findViewById(R.id.loading_spinner);
 
 
         mAdapter = new EarthquakeAdapter(this, new ArrayList<Earthquake>());
@@ -74,9 +80,16 @@ public class EarthquakeActivity extends AppCompatActivity
 
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
-        Log.v(LOG_TAG,"TESTLOADER - In main Activity, ask for a loaderManager");
-        LoaderManager loaderManager = getLoaderManager();
-        loaderManager.initLoader(EARTHQUAKE_LOADER_ID,null, this);
+        ConnectivityManager connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+        if(networkInfo != null && networkInfo.isConnected()) {
+            Log.v(LOG_TAG, "TESTLOADER - In main Activity, ask for a loaderManager");
+            LoaderManager loaderManager = getLoaderManager();
+            loaderManager.initLoader(EARTHQUAKE_LOADER_ID, null, this);
+        }else{
+            mLoaderIndicator.setVisibility(View.GONE);
+            mEmptyStateTextView.setText("No internet connection");
+        }
 
     }
 
@@ -90,6 +103,7 @@ public class EarthquakeActivity extends AppCompatActivity
     @Override
     public void onLoadFinished(android.content.Loader<List<Earthquake>> loader, List<Earthquake> earthquakes) {
         Log.v(LOG_TAG,"TESTLOADER - Finished loading data, lets plug the new data onto the adapter");
+        mLoaderIndicator.setVisibility(View.GONE);
         mAdapter.clear();
         if(earthquakes!=null && !earthquakes.isEmpty()){
             mAdapter.addAll(earthquakes);
