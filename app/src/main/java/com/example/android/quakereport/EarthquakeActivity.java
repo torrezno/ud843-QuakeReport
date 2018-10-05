@@ -15,26 +15,30 @@
  */
 package com.example.android.quakereport;
 
+import android.app.LoaderManager;
+import android.content.AsyncTaskLoader;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.app.LoaderManager.LoaderCallbacks;
 
-import java.net.URL;
+
 import java.util.ArrayList;
 import java.util.List;
 
 //https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&starttime=2016-01-01&endtime=2016-01-31&minmag=6&limit=10
-public class EarthquakeActivity extends AppCompatActivity {
+public class EarthquakeActivity extends AppCompatActivity
+        implements LoaderCallbacks<List<Earthquake>> {
 
     public static final String LOG_TAG = EarthquakeActivity.class.getName();
 
+    private static final int EARTHQUAKE_LOADER_ID = 1;
     private static final String URL_STRING = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=6&limit=10";
 
     private EarthquakeAdapter mAdapter;
@@ -64,36 +68,26 @@ public class EarthquakeActivity extends AppCompatActivity {
         // Set the adapter on the {@link ListView}
         // so the list can be populated in the user interface
 
-
-        new EarthquakeAsyncTask().execute(URL_STRING);
-
-
-
-
+        LoaderManager loaderManager = getLoaderManager();
+        loaderManager.initLoader(EARTHQUAKE_LOADER_ID,null, this);
     }
 
-    public class EarthquakeAsyncTask extends AsyncTask<String,Void,List<Earthquake>>{
-        @Override
 
-        protected void onPostExecute(List<Earthquake> earthquakes) {
-            super.onPostExecute(earthquakes);
-            // Find a reference to the {@link ListView} in the layout
-            mAdapter.clear();
-            if (earthquakes != null && !earthquakes.isEmpty()) {
-                mAdapter.addAll(earthquakes);
-            }
+    @Override
+    public android.content.Loader<List<Earthquake>> onCreateLoader(int i, Bundle bundle) {
+        return new EarthquakeLoader(this, URL_STRING);
+    }
+
+    @Override
+    public void onLoadFinished(android.content.Loader<List<Earthquake>> loader, List<Earthquake> earthquakes) {
+        mAdapter.clear();
+        if(earthquakes!=null && !earthquakes.isEmpty()){
+            mAdapter.addAll(earthquakes);
         }
+    }
 
-        @Override
-        protected List<Earthquake> doInBackground(String... urls) {
-            List<Earthquake> quakes=null;
-            //Make sure urls have exactly 1 url
-            if(urls.length!=1 || urls[0]==null){
-                return quakes;
-            }
-            quakes = QueryUtils.fetchEarthquakeData(URL_STRING);
-
-            return quakes;
-        }
+    @Override
+    public void onLoaderReset(android.content.Loader<List<Earthquake>> loader) {
+         mAdapter.clear();
     }
 }
