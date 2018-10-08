@@ -19,10 +19,12 @@ import android.app.LoaderManager;
 import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
@@ -47,7 +49,8 @@ public class EarthquakeActivity extends AppCompatActivity
     public static final String LOG_TAG = EarthquakeActivity.class.getName();
 
     private static final int EARTHQUAKE_LOADER_ID = 1;
-    private static final String URL_STRING = "https://earthquake.usgs.gov/fdsnws/event/1/query?format=geojson&eventtype=earthquake&orderby=time&minmag=6&limit=10";
+
+    private static final String URL_STRING = "https://earthquake.usgs.gov/fdsnws/event/1/query";
 
     private EarthquakeAdapter mAdapter;
     private TextView mEmptyStateTextView;
@@ -99,7 +102,19 @@ public class EarthquakeActivity extends AppCompatActivity
     @Override
     public android.content.Loader<List<Earthquake>> onCreateLoader(int i, Bundle bundle) {
         Log.v(LOG_TAG,"TESTLOADER - in onCreateLoader method, creating a new Loader cause it didnt found it");
-        return new EarthquakeLoader(this, URL_STRING);
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        String minMagnitude = sharedPrefs.getString(
+                getString(R.string.settings_min_magnitude_key),
+                getString(R.string.settings_min_magnitude_default));
+        Uri baseUri = Uri.parse(URL_STRING);
+        Uri.Builder uriBuilder = baseUri.buildUpon();
+
+        uriBuilder.appendQueryParameter("format","geojson");
+        uriBuilder.appendQueryParameter("limit","10");
+        uriBuilder.appendQueryParameter("minmag",minMagnitude);
+        uriBuilder.appendQueryParameter("orderby","time");
+
+        return new EarthquakeLoader(this, uriBuilder.toString());
     }
 
     @Override
